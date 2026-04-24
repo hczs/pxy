@@ -1,13 +1,15 @@
 version: 2
 
+project_name: pxy
+
 before:
   hooks:
     - go mod tidy
 
 builds:
-  - id: px
+  - id: pxy
     main: .
-    binary: px
+    binary: pxy
     env:
       - CGO_ENABLED=0
     goos:
@@ -19,9 +21,9 @@ builds:
       - arm64
 
 archives:
-  - id: px
+  - id: pxy
     builds:
-      - px
+      - pxy
     name_template: >-
       {{ .ProjectName }}_
       {{- .Version }}_

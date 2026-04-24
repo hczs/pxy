@@ -4,7 +4,7 @@ import (
 	"context"
 	"os"
 
-	"github.com/hczs/px/cmd"
+	"github.com/hczs/pxy/cmd"
 )
 
 func main() {

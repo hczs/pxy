@@ -8,7 +8,10 @@ import (
 	"strings"
 )
 
-const marker = "# px - proxy switcher"
+const (
+	marker    = "# pxy - proxy switcher"
+	oldMarker = "# px - proxy switcher"
+)
 
 func Detect(env map[string]string, argv0 string) string {
 	if env["PSModulePath"] != "" || env["PSVersionTable"] != "" {
@@ -48,46 +51,46 @@ func ProfilePath(shellName, home string) (string, error) {
 	}
 }
 
-func FunctionSnippet(shellName, pxBin string) (string, error) {
+func FunctionSnippet(shellName, pxyBin string) (string, error) {
 	switch shellName {
 	case "bash", "zsh":
 		// shell function 能修改当前 shell 环境；普通子进程不能修改父进程环境变量。
 		return fmt.Sprintf(`%s
-function px() {
-  local px_bin="%s"
+function pxy() {
+  local pxy_bin="%s"
   case "$1" in
-    on) eval "$("$px_bin" _on --shell %s)" ;;
-    off) eval "$("$px_bin" _off --shell %s)" ;;
-    *) "$px_bin" "$@" ;;
+    on) eval "$("$pxy_bin" _on --shell %s)" ;;
+    off) eval "$("$pxy_bin" _off --shell %s)" ;;
+    *) "$pxy_bin" "$@" ;;
   esac
 }
-`, marker, escapeDouble(pxBin), shellName, shellName), nil
+`, marker, escapeDouble(pxyBin), shellName, shellName), nil
 	case "powershell":
 		return fmt.Sprintf(`%s
-function px {
+function pxy {
   param(
     [Parameter(Position=0)]
     [string]$cmd,
     [Parameter(ValueFromRemainingArguments=$true)]
     [string[]]$rest
   )
-  $pxBin = '%s'
+  $pxyBin = '%s'
   switch ($cmd) {
-    "on" { Invoke-Expression (& $pxBin _on --shell powershell) }
-    "off" { Invoke-Expression (& $pxBin _off --shell powershell) }
+    "on" { Invoke-Expression (& $pxyBin _on --shell powershell) }
+    "off" { Invoke-Expression (& $pxyBin _off --shell powershell) }
     default {
-      if ($cmd) { & $pxBin $cmd @rest } else { & $pxBin @rest }
+      if ($cmd) { & $pxyBin $cmd @rest } else { & $pxyBin @rest }
     }
   }
 }
-`, marker, strings.ReplaceAll(pxBin, "'", "''")), nil
+`, marker, strings.ReplaceAll(pxyBin, "'", "''")), nil
 	default:
 		return "", fmt.Errorf("unsupported shell: %s", shellName)
 	}
 }
 
-func Install(path, shellName, pxBin string) error {
-	snippet, err := FunctionSnippet(shellName, pxBin)
+func Install(path, shellName, pxyBin string) error {
+	snippet, err := FunctionSnippet(shellName, pxyBin)
 	if err != nil {
 		return err
 	}
@@ -110,8 +113,13 @@ func Install(path, shellName, pxBin string) error {
 }
 
 func removeExistingSnippet(content string) string {
-	start := strings.Index(content, marker)
-	if start == -1 {
+	start := len(content)
+	for _, value := range []string{marker, oldMarker} {
+		if index := strings.Index(content, value); index != -1 && index < start {
+			start = index
+		}
+	}
+	if start == len(content) {
 		return content
 	}
 	return strings.TrimRight(content[:start], "\n")

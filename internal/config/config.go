@@ -31,7 +31,7 @@ type Endpoint struct {
 }
 
 func DefaultPath(home string) string {
-	return filepath.Join(home, ".px", "config.yaml")
+	return filepath.Join(home, ".pxy", "config.yaml")
 }
 
 func Load(path string) (Config, error) {

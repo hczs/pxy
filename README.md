@@ -1,28 +1,28 @@
-# px
+# pxy
 
 [English](./README.en.md)
 
-[![CI](https://github.com/hczs/px/actions/workflows/ci.yml/badge.svg)](https://github.com/hczs/px/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/hczs/px)](https://github.com/hczs/px/releases)
-[![License](https://img.shields.io/github/license/hczs/px)](./LICENSE)
-[![Go Reference](https://pkg.go.dev/badge/github.com/hczs/px.svg)](https://pkg.go.dev/github.com/hczs/px)
+[![CI](https://github.com/hczs/pxy/actions/workflows/ci.yml/badge.svg)](https://github.com/hczs/pxy/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/hczs/pxy)](https://github.com/hczs/pxy/releases)
+[![License](https://img.shields.io/github/license/hczs/pxy)](./LICENSE)
+[![Go Reference](https://pkg.go.dev/badge/github.com/hczs/pxy.svg)](https://pkg.go.dev/github.com/hczs/pxy)
 
-`px` 是一个轻量的 Go CLI，用来在当前终端会话中快速开启、关闭代理环境变量。
+`pxy` 是一个轻量的 Go CLI，用来在当前终端会话中快速开启、关闭代理环境变量。
 
-它会自动识别常见本地代理工具，保存本地配置，并安装 shell function，让 `px on` / `px off` 可以真正影响当前 shell。
+它会自动识别常见本地代理工具，保存本地配置，并安装 shell function，让 `pxy on` / `pxy off` 可以真正影响当前 shell。
 
 ## 特性
 
 - 一条命令初始化：自动检测代理配置并写入 shell profile。
 - 当前会话生效：通过 shell function 修改当前终端环境变量。
-- 可恢复现场：`px off` 会恢复 `px on` 之前已有的代理变量。
+- 可恢复现场：`pxy off` 会恢复 `pxy on` 之前已有的代理变量。
 - 支持自动检测：Clash、Clash Verge、Surge、v2rayA、v2rayN。
 - 支持多种 shell：bash、zsh、PowerShell。
-- 小而透明：配置保存在 `~/.px/config.yaml`，命令输出直接可读。
+- 小而透明：配置保存在 `~/.pxy/config.yaml`，命令输出直接可读。
 
 ## 安装
 
-从 [GitHub Releases](https://github.com/hczs/px/releases) 下载对应平台的二进制文件。
+从 [GitHub Releases](https://github.com/hczs/pxy/releases) 下载对应平台的二进制文件。
 
 不知道下载哪个文件时：
 
@@ -39,24 +39,24 @@
 
 ```bash
 cd ~/Downloads
-tar -xzf px_VERSION_darwin_arm64.tar.gz
-chmod +x px
-sudo mv px /usr/local/bin/px
-px init
+tar -xzf pxy_VERSION_darwin_arm64.tar.gz
+chmod +x pxy
+sudo mv pxy /usr/local/bin/pxy
+pxy init
 ```
 
 如果系统提示文件来自未知开发者，执行：
 
 ```bash
-xattr -d com.apple.quarantine /usr/local/bin/px
+xattr -d com.apple.quarantine /usr/local/bin/pxy
 ```
 
-然后重启终端，或执行 `px init` 输出的 `source ...` 命令。之后即可使用：
+然后重启终端，或执行 `pxy init` 输出的 `source ...` 命令。之后即可使用：
 
 ```bash
-px on
-px status
-px off
+pxy on
+pxy status
+pxy off
 ```
 
 ### Linux 二进制安装
@@ -65,30 +65,30 @@ px off
 
 ```bash
 cd ~/Downloads
-tar -xzf px_VERSION_linux_amd64.tar.gz
-chmod +x px
-sudo mv px /usr/local/bin/px
-px init
+tar -xzf pxy_VERSION_linux_amd64.tar.gz
+chmod +x pxy
+sudo mv pxy /usr/local/bin/pxy
+pxy init
 ```
 
-重启终端，或执行 `px init` 输出的 `source ...` 命令。之后即可使用：
+重启终端，或执行 `pxy init` 输出的 `source ...` 命令。之后即可使用：
 
 ```bash
-px on
-px status
-px off
+pxy on
+pxy status
+pxy off
 ```
 
 ### Windows 二进制安装
 
-1. 从 Releases 下载 `px_VERSION_windows_amd64.zip`。
-2. 解压后得到 `px.exe`。
-3. 在 `px.exe` 所在目录打开 PowerShell，执行：
+1. 从 Releases 下载 `pxy_VERSION_windows_amd64.zip`。
+2. 解压后得到 `pxy.exe`。
+3. 在 `pxy.exe` 所在目录打开 PowerShell，执行：
 
 ```powershell
-$InstallDir = "$env:LOCALAPPDATA\Programs\px"
+$InstallDir = "$env:LOCALAPPDATA\Programs\pxy"
 New-Item -ItemType Directory -Force $InstallDir | Out-Null
-Copy-Item .\px.exe "$InstallDir\px.exe" -Force
+Copy-Item .\pxy.exe "$InstallDir\pxy.exe" -Force
 
 $UserPath = [Environment]::GetEnvironmentVariable("Path", "User")
 if (($UserPath -split ";") -notcontains $InstallDir) {
@@ -100,21 +100,21 @@ if (($UserPath -split ";") -notcontains $InstallDir) {
 确认安装成功：
 
 ```powershell
-px init
+pxy init
 ```
 
-`px init` 会写入 PowerShell profile。完成后重新打开 PowerShell。之后即可使用：
+`pxy init` 会写入 PowerShell profile。完成后重新打开 PowerShell。之后即可使用：
 
 ```powershell
-px on
-px status
-px off
+pxy on
+pxy status
+pxy off
 ```
 
 也可以从源码安装：
 
 ```bash
-go install github.com/hczs/px@latest
+go install github.com/hczs/pxy@latest
 ```
 
 Release 构建支持 macOS、Linux、Windows 的 amd64 / arm64。
@@ -124,7 +124,7 @@ Release 构建支持 macOS、Linux、Windows 的 amd64 / arm64。
 初始化：
 
 ```bash
-px init
+pxy init
 ```
 
 按提示选择自动检测到的代理配置，或手动输入代理地址。完成后重启终端，或执行命令输出中的 `source ...`。
@@ -132,42 +132,42 @@ px init
 开启代理：
 
 ```bash
-px on
+pxy on
 ```
 
 查看状态：
 
 ```bash
-px status
+pxy status
 ```
 
 测试当前出口 IP：
 
 ```bash
-px test
+pxy test
 ```
 
 关闭代理：
 
 ```bash
-px off
+pxy off
 ```
 
 ## 命令
 
 | 命令 | 说明 |
 | --- | --- |
-| `px init` | 检测 shell 和代理配置，保存配置并安装 shell function |
-| `px on` | 在当前 shell 中开启代理环境变量 |
-| `px off` | 恢复或清理当前 shell 中的代理环境变量 |
-| `px status` | 查看当前代理环境变量状态 |
-| `px test` | 通过 `https://ipinfo.io/json` 测试当前代理 |
-| `px list` | 列出检测到的本地代理软件 |
-| `px config` | 手动重新配置代理 |
+| `pxy init` | 检测 shell 和代理配置，保存配置并安装 shell function |
+| `pxy on` | 在当前 shell 中开启代理环境变量 |
+| `pxy off` | 恢复或清理当前 shell 中的代理环境变量 |
+| `pxy status` | 查看当前代理环境变量状态 |
+| `pxy test` | 通过 `https://ipinfo.io/json` 测试当前代理 |
+| `pxy list` | 列出检测到的本地代理软件 |
+| `pxy config` | 手动重新配置代理 |
 
 ## 支持的环境变量
 
-`px on` 会根据配置设置以下变量：
+`pxy on` 会根据配置设置以下变量：
 
 - `http_proxy` / `HTTP_PROXY`
 - `https_proxy` / `HTTPS_PROXY`
@@ -177,16 +177,16 @@ HTTP 与 HTTPS 代理使用 `http://host:port`，SOCKS5 代理使用 `socks5://h
 
 ## 工作方式
 
-普通 CLI 子进程无法直接修改父 shell 的环境变量，所以 `px init` 会向 shell profile 写入一个 `px` shell function。
+普通 CLI 子进程无法直接修改父 shell 的环境变量，所以 `pxy init` 会向 shell profile 写入一个 `pxy` shell function。
 
-之后执行 `px on` / `px off` 时，shell function 会调用 `px` 生成环境变量脚本，并在当前 shell 中执行。
+之后执行 `pxy on` / `pxy off` 时，shell function 会调用 `pxy` 生成环境变量脚本，并在当前 shell 中执行。
 
 ## 配置
 
 默认配置文件：
 
 ```text
-~/.px/config.yaml
+~/.pxy/config.yaml
 ```
 
 示例：

@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hczs/px/internal/config"
+	"github.com/hczs/pxy/internal/config"
 )
 
 func TestOnBashIncludesSnapshotAndExports(t *testing.T) {

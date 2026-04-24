@@ -1,28 +1,28 @@
-# px
+# pxy
 
 [简体中文](./README.md)
 
-[![CI](https://github.com/hczs/px/actions/workflows/ci.yml/badge.svg)](https://github.com/hczs/px/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/hczs/px)](https://github.com/hczs/px/releases)
-[![License](https://img.shields.io/github/license/hczs/px)](./LICENSE)
-[![Go Reference](https://pkg.go.dev/badge/github.com/hczs/px.svg)](https://pkg.go.dev/github.com/hczs/px)
+[![CI](https://github.com/hczs/pxy/actions/workflows/ci.yml/badge.svg)](https://github.com/hczs/pxy/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/hczs/pxy)](https://github.com/hczs/pxy/releases)
+[![License](https://img.shields.io/github/license/hczs/pxy)](./LICENSE)
+[![Go Reference](https://pkg.go.dev/badge/github.com/hczs/pxy.svg)](https://pkg.go.dev/github.com/hczs/pxy)
 
-`px` is a lightweight Go CLI for quickly enabling and disabling proxy environment variables in the current terminal session.
+`pxy` is a lightweight Go CLI for quickly enabling and disabling proxy environment variables in the current terminal session.
 
-It detects common local proxy tools, saves a local config, and installs a shell function so `px on` / `px off` can affect the current shell.
+It detects common local proxy tools, saves a local config, and installs a shell function so `pxy on` / `pxy off` can affect the current shell.
 
 ## Features
 
 - One-command setup: detect proxy config and install the shell integration.
 - Current-session effect: update proxy variables in the active terminal.
-- Restore previous values: `px off` restores proxy variables that existed before `px on`.
+- Restore previous values: `pxy off` restores proxy variables that existed before `pxy on`.
 - Auto-detection for Clash, Clash Verge, Surge, v2rayA, and v2rayN.
 - Shell support for bash, zsh, and PowerShell.
-- Small and transparent: config lives at `~/.px/config.yaml`.
+- Small and transparent: config lives at `~/.pxy/config.yaml`.
 
 ## Installation
 
-Download a binary for your platform from [GitHub Releases](https://github.com/hczs/px/releases).
+Download a binary for your platform from [GitHub Releases](https://github.com/hczs/pxy/releases).
 
 If you are not sure which asset to download:
 
@@ -39,24 +39,24 @@ The example below is for Apple Silicon Macs. On Intel Macs, replace `darwin_arm6
 
 ```bash
 cd ~/Downloads
-tar -xzf px_VERSION_darwin_arm64.tar.gz
-chmod +x px
-sudo mv px /usr/local/bin/px
-px init
+tar -xzf pxy_VERSION_darwin_arm64.tar.gz
+chmod +x pxy
+sudo mv pxy /usr/local/bin/pxy
+pxy init
 ```
 
 If macOS says the file is from an unidentified developer, run:
 
 ```bash
-xattr -d com.apple.quarantine /usr/local/bin/px
+xattr -d com.apple.quarantine /usr/local/bin/pxy
 ```
 
-Then restart your terminal, or run the `source ...` command printed by `px init`. After that:
+Then restart your terminal, or run the `source ...` command printed by `pxy init`. After that:
 
 ```bash
-px on
-px status
-px off
+pxy on
+pxy status
+pxy off
 ```
 
 ### Linux Binary Install
@@ -65,30 +65,30 @@ The example below is for x86_64 Linux. On ARM64 machines, replace `linux_amd64` 
 
 ```bash
 cd ~/Downloads
-tar -xzf px_VERSION_linux_amd64.tar.gz
-chmod +x px
-sudo mv px /usr/local/bin/px
-px init
+tar -xzf pxy_VERSION_linux_amd64.tar.gz
+chmod +x pxy
+sudo mv pxy /usr/local/bin/pxy
+pxy init
 ```
 
-Restart your terminal, or run the `source ...` command printed by `px init`. After that:
+Restart your terminal, or run the `source ...` command printed by `pxy init`. After that:
 
 ```bash
-px on
-px status
-px off
+pxy on
+pxy status
+pxy off
 ```
 
 ### Windows Binary Install
 
-1. Download `px_VERSION_windows_amd64.zip` from Releases.
-2. Unzip it to get `px.exe`.
-3. Open PowerShell in the directory that contains `px.exe`, then run:
+1. Download `pxy_VERSION_windows_amd64.zip` from Releases.
+2. Unzip it to get `pxy.exe`.
+3. Open PowerShell in the directory that contains `pxy.exe`, then run:
 
 ```powershell
-$InstallDir = "$env:LOCALAPPDATA\Programs\px"
+$InstallDir = "$env:LOCALAPPDATA\Programs\pxy"
 New-Item -ItemType Directory -Force $InstallDir | Out-Null
-Copy-Item .\px.exe "$InstallDir\px.exe" -Force
+Copy-Item .\pxy.exe "$InstallDir\pxy.exe" -Force
 
 $UserPath = [Environment]::GetEnvironmentVariable("Path", "User")
 if (($UserPath -split ";") -notcontains $InstallDir) {
@@ -100,74 +100,74 @@ if (($UserPath -split ";") -notcontains $InstallDir) {
 Check the installation:
 
 ```powershell
-px init
+pxy init
 ```
 
-`px init` writes the PowerShell profile integration. Reopen PowerShell. After that:
+`pxy init` writes the PowerShell profile integration. Reopen PowerShell. After that:
 
 ```powershell
-px on
-px status
-px off
+pxy on
+pxy status
+pxy off
 ```
 
 Or install from source:
 
 ```bash
-go install github.com/hczs/px@latest
+go install github.com/hczs/pxy@latest
 ```
 
 Release builds support macOS, Linux, and Windows on amd64 / arm64.
 
 ## Quick Start
 
-Initialize `px`:
+Initialize `pxy`:
 
 ```bash
-px init
+pxy init
 ```
 
-Follow the prompts to use a detected proxy config, or enter one manually. Then restart your terminal, or run the `source ...` command printed by `px init`.
+Follow the prompts to use a detected proxy config, or enter one manually. Then restart your terminal, or run the `source ...` command printed by `pxy init`.
 
 Enable proxy:
 
 ```bash
-px on
+pxy on
 ```
 
 Check status:
 
 ```bash
-px status
+pxy status
 ```
 
 Test the current outbound IP:
 
 ```bash
-px test
+pxy test
 ```
 
 Disable proxy:
 
 ```bash
-px off
+pxy off
 ```
 
 ## Commands
 
 | Command | Description |
 | --- | --- |
-| `px init` | Detect shell/proxy config, save config, and install the shell function |
-| `px on` | Enable proxy environment variables in the current shell |
-| `px off` | Restore or clear proxy environment variables in the current shell |
-| `px status` | Show current proxy environment status |
-| `px test` | Test the current proxy through `https://ipinfo.io/json` |
-| `px list` | List detected local proxy software |
-| `px config` | Reconfigure proxy manually |
+| `pxy init` | Detect shell/proxy config, save config, and install the shell function |
+| `pxy on` | Enable proxy environment variables in the current shell |
+| `pxy off` | Restore or clear proxy environment variables in the current shell |
+| `pxy status` | Show current proxy environment status |
+| `pxy test` | Test the current proxy through `https://ipinfo.io/json` |
+| `pxy list` | List detected local proxy software |
+| `pxy config` | Reconfigure proxy manually |
 
 ## Supported Environment Variables
 
-`px on` sets these variables according to the saved config:
+`pxy on` sets these variables according to the saved config:
 
 - `http_proxy` / `HTTP_PROXY`
 - `https_proxy` / `HTTPS_PROXY`
@@ -177,16 +177,16 @@ HTTP and HTTPS proxies use `http://host:port`. SOCKS5 proxies use `socks5://host
 
 ## How It Works
 
-A normal CLI child process cannot directly modify its parent shell environment. `px init` therefore writes a `px` shell function into your shell profile.
+A normal CLI child process cannot directly modify its parent shell environment. `pxy init` therefore writes a `pxy` shell function into your shell profile.
 
-When you run `px on` / `px off`, that function asks the `px` binary to generate shell code and evaluates it in the current shell.
+When you run `pxy on` / `pxy off`, that function asks the `pxy` binary to generate shell code and evaluates it in the current shell.
 
 ## Configuration
 
 Default config file:
 
 ```text
-~/.px/config.yaml
+~/.pxy/config.yaml
 ```
 
 Example:

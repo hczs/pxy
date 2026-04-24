@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/hczs/px/internal/config"
+	"github.com/hczs/pxy/internal/config"
 )
 
 type Result struct {

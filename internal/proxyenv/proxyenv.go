@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hczs/px/internal/config"
+	"github.com/hczs/pxy/internal/config"
 )
 
 var proxyVars = []string{"http_proxy", "HTTP_PROXY", "https_proxy", "HTTPS_PROXY", "all_proxy", "ALL_PROXY"}
@@ -54,7 +54,7 @@ func OffScript(shellName string) (string, error) {
 func posixOn(values map[string]string) string {
 	var b strings.Builder
 	for _, name := range proxyVars {
-		// 开启前保存旧值，类似 Python dict 里先备份原来的 key，便于 px off 恢复。
+		// 开启前保存旧值，类似 Python dict 里先备份原来的 key，便于 pxy off 恢复。
 		fmt.Fprintf(&b, "if [ \"${%s+x}\" ]; then __PX_OLD_%s=\"${%s}\"; __PX_OLD_%s_SET=1; else __PX_OLD_%s=''; __PX_OLD_%s_SET=0; fi\n", name, name, name, name, name, name)
 	}
 	for _, name := range proxyVars {

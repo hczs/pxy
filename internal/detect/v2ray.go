@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/hczs/px/internal/config"
+	"github.com/hczs/pxy/internal/config"
 )
 
 type v2rayConfig struct {

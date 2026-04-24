@@ -6,7 +6,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/hczs/px/internal/config"
+	"github.com/hczs/pxy/internal/config"
 )
 
 func Confirm(in io.Reader, out io.Writer, prompt string) (bool, error) {
@@ -40,7 +40,7 @@ func ManualConfig(in io.Reader, out io.Writer) (config.Config, error) {
 			return config.Config{}, err
 		}
 	}
-	cfg := config.Config{Proxy: config.Proxy{HTTP: http, HTTPS: https, SOCKS5: socks, AutoDetect: false, Source: "手动配置(~/.px/config.yaml)"}}
+	cfg := config.Config{Proxy: config.Proxy{HTTP: http, HTTPS: https, SOCKS5: socks, AutoDetect: false, Source: "手动配置(~/.pxy/config.yaml)"}}
 	if err := cfg.Validate(); err != nil {
 		return config.Config{}, err
 	}

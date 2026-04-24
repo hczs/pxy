@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/hczs/px/internal/config"
+	"github.com/hczs/pxy/internal/config"
 )
 
 func ParseSurge(path string) Result {

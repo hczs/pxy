@@ -1,4 +1,4 @@
-module github.com/hczs/px
+module github.com/hczs/pxy
 
 go 1.22
 

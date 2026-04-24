@@ -10,13 +10,13 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/hczs/px/internal/config"
-	"github.com/hczs/px/internal/detect"
-	"github.com/hczs/px/internal/interactive"
-	"github.com/hczs/px/internal/proxyenv"
-	"github.com/hczs/px/internal/proxytest"
-	"github.com/hczs/px/internal/shell"
-	"github.com/hczs/px/internal/status"
+	"github.com/hczs/pxy/internal/config"
+	"github.com/hczs/pxy/internal/detect"
+	"github.com/hczs/pxy/internal/interactive"
+	"github.com/hczs/pxy/internal/proxyenv"
+	"github.com/hczs/pxy/internal/proxytest"
+	"github.com/hczs/pxy/internal/shell"
+	"github.com/hczs/pxy/internal/status"
 )
 
 func Run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
@@ -32,10 +32,10 @@ func Run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 	case "config":
 		return runConfig(os.Stdin, stdout, stderr)
 	case "on":
-		fmt.Fprintln(stderr, "请先执行 px init，然后在 shell 中使用 px on")
+		fmt.Fprintln(stderr, "请先执行 pxy init，然后在 shell 中使用 pxy on")
 		return 1
 	case "off":
-		fmt.Fprintln(stderr, "请先执行 px init，然后在 shell 中使用 px off")
+		fmt.Fprintln(stderr, "请先执行 pxy init，然后在 shell 中使用 pxy off")
 		return 1
 	case "status":
 		return runStatus(stdout)
@@ -96,14 +96,14 @@ func runInit(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 	}
 	exe, err := os.Executable()
 	if err != nil {
-		fmt.Fprintf(stderr, "resolve px path: %v\n", err)
+		fmt.Fprintf(stderr, "resolve pxy path: %v\n", err)
 		return 1
 	}
 	if err := shell.Install(profile, shellName, exe); err != nil {
 		fmt.Fprintf(stderr, "%v\n", err)
 		return 1
 	}
-	fmt.Fprintf(stdout, "px init 完成，请重启终端或执行 source %s\n", profile)
+	fmt.Fprintf(stdout, "pxy init 完成，请重启终端或执行 source %s\n", profile)
 	return 0
 }
 
@@ -192,7 +192,7 @@ func runStatus(stdout io.Writer) int {
 func runTest(ctx context.Context, stdout, stderr io.Writer) int {
 	result, err := proxytest.Run(ctx, "https://ipinfo.io/json", &http.Client{})
 	if err != nil {
-		fmt.Fprintf(stderr, "代理测试失败，请确认已执行 px on: %v\n", err)
+		fmt.Fprintf(stderr, "代理测试失败，请确认已执行 pxy on: %v\n", err)
 		return 1
 	}
 	fmt.Fprintf(stdout, "IP: %s\n国家: %s\n城市: %s\n", result.IP, result.Country, result.City)
@@ -250,11 +250,11 @@ func envMap(values []string) map[string]string {
 
 func printHelp(w io.Writer) {
 	fmt.Fprintln(w, `Usage:
-  px init      Detect shell/proxy, save config, install shell function
-  px on        Enable proxy in the current shell through the installed function
-  px off       Restore or clear proxy variables in the current shell
-  px status    Show current proxy environment
-  px test      Test current proxy with https://ipinfo.io/json
-  px list      List detected local proxy software
-  px config    Reconfigure proxy manually`)
+  pxy init      Detect shell/proxy, save config, install shell function
+  pxy on        Enable proxy in the current shell through the installed function
+  pxy off       Restore or clear proxy variables in the current shell
+  pxy status    Show current proxy environment
+  pxy test      Test current proxy with https://ipinfo.io/json
+  pxy list      List detected local proxy software
+  pxy config    Reconfigure proxy manually`)
 }

@@ -10,12 +10,12 @@ import (
 func TestRunHelp(t *testing.T) {
 	var stdout, stderr bytes.Buffer
 
-	code := Run(context.Background(), []string{"px"}, &stdout, &stderr)
+	code := Run(context.Background(), []string{"pxy"}, &stdout, &stderr)
 
 	if code != 0 {
 		t.Fatalf("code = %d, want 0; stderr=%q", code, stderr.String())
 	}
-	for _, want := range []string{"Usage:", "px init", "px on", "px off", "px status", "px test", "px list", "px config"} {
+	for _, want := range []string{"Usage:", "pxy init", "pxy on", "pxy off", "pxy status", "pxy test", "pxy list", "pxy config"} {
 		if !strings.Contains(stdout.String(), want) {
 			t.Fatalf("help missing %q:\n%s", want, stdout.String())
 		}
@@ -28,7 +28,7 @@ func TestRunHelp(t *testing.T) {
 func TestRunUnknownCommand(t *testing.T) {
 	var stdout, stderr bytes.Buffer
 
-	code := Run(context.Background(), []string{"px", "missing"}, &stdout, &stderr)
+	code := Run(context.Background(), []string{"pxy", "missing"}, &stdout, &stderr)
 
 	if code != 2 {
 		t.Fatalf("code = %d, want 2", code)
@@ -44,7 +44,7 @@ func TestRunUnknownCommand(t *testing.T) {
 func TestInternalOnRequiresShell(t *testing.T) {
 	var stdout, stderr bytes.Buffer
 
-	code := Run(context.Background(), []string{"px", "_on"}, &stdout, &stderr)
+	code := Run(context.Background(), []string{"pxy", "_on"}, &stdout, &stderr)
 
 	if code != 2 {
 		t.Fatalf("code = %d, want 2", code)
@@ -60,7 +60,7 @@ func TestInternalOnRequiresShell(t *testing.T) {
 func TestStatusCommand(t *testing.T) {
 	var stdout, stderr bytes.Buffer
 
-	code := Run(context.Background(), []string{"px", "status"}, &stdout, &stderr)
+	code := Run(context.Background(), []string{"pxy", "status"}, &stdout, &stderr)
 
 	if code != 0 {
 		t.Fatalf("code = %d, want 0; stderr=%q", code, stderr.String())

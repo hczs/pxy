@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/hczs/px/internal/config"
+	"github.com/hczs/pxy/internal/config"
 	"gopkg.in/yaml.v3"
 )
 
