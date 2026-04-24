@@ -161,7 +161,7 @@ pxy off
 | `pxy on` | Enable proxy environment variables in the current shell |
 | `pxy off` | Restore or clear proxy environment variables in the current shell |
 | `pxy status` | Show current proxy environment status |
-| `pxy test` | Test the current proxy through `https://ipinfo.io/json` |
+| `pxy test` | Test the current proxy through `https://ipwho.is/` |
 | `pxy list` | List detected local proxy software |
 | `pxy config` | Reconfigure proxy manually |
 
