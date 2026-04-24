@@ -35,7 +35,7 @@ func Run(ctx context.Context, url string, client *http.Client) (Result, error) {
 	}
 	var result Result
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return Result{}, fmt.Errorf("decode ipinfo response: %w", err)
+		return Result{}, fmt.Errorf("decode proxy test response: %w", err)
 	}
 	return result, nil
 }

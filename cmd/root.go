@@ -19,6 +19,8 @@ import (
 	"github.com/hczs/pxy/internal/status"
 )
 
+const defaultTestURL = "https://ipwho.is/"
+
 func Run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 	// Go 没有异常退出约定；CLI 常用 int 返回码表达成功或失败。
 	if len(args) < 2 || args[1] == "-h" || args[1] == "--help" || args[1] == "help" {
@@ -190,7 +192,7 @@ func runStatus(stdout io.Writer) int {
 }
 
 func runTest(ctx context.Context, stdout, stderr io.Writer) int {
-	result, err := proxytest.Run(ctx, "https://ipinfo.io/json", &http.Client{})
+	result, err := proxytest.Run(ctx, defaultTestURL, &http.Client{})
 	if err != nil {
 		fmt.Fprintf(stderr, "代理测试失败，请确认已执行 pxy on: %v\n", err)
 		return 1
@@ -254,7 +256,7 @@ func printHelp(w io.Writer) {
   pxy on        Enable proxy in the current shell through the installed function
   pxy off       Restore or clear proxy variables in the current shell
   pxy status    Show current proxy environment
-  pxy test      Test current proxy with https://ipinfo.io/json
+  pxy test      Test current proxy with https://ipwho.is/
   pxy list      List detected local proxy software
   pxy config    Reconfigure proxy manually`)
 }

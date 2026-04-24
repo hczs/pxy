@@ -161,7 +161,7 @@ pxy off
 | `pxy on` | 在当前 shell 中开启代理环境变量 |
 | `pxy off` | 恢复或清理当前 shell 中的代理环境变量 |
 | `pxy status` | 查看当前代理环境变量状态 |
-| `pxy test` | 通过 `https://ipinfo.io/json` 测试当前代理 |
+| `pxy test` | 通过 `https://ipwho.is/` 测试当前代理 |
 | `pxy list` | 列出检测到的本地代理软件 |
 | `pxy config` | 手动重新配置代理 |
 
