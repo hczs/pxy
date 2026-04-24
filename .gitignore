@@ -1,0 +1,29 @@
+# Build outputs
+build/
+dist/
+px
+px.exe
+
+# Test and coverage outputs
+coverage.out
+coverage.html
+*.test
+
+# Go workspace files
+go.work
+go.work.sum
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Local agent and acceptance docs
+AGENTS.md
+agents.md
+docs/superpowers/
+docs/acceptance/
+acceptance/
