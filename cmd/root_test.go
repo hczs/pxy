@@ -15,7 +15,7 @@ func TestRunHelp(t *testing.T) {
 	if code != 0 {
 		t.Fatalf("code = %d, want 0; stderr=%q", code, stderr.String())
 	}
-	for _, want := range []string{"Usage:", "pxy init", "pxy on", "pxy off", "pxy status", "pxy test", "pxy list", "pxy config", "pxy version"} {
+	for _, want := range []string{"Usage:", "pxy init", "pxy on", "pxy off", "pxy status", "pxy test", "pxy list", "pxy config", "pxy version", "pxy update"} {
 		if !strings.Contains(stdout.String(), want) {
 			t.Fatalf("help missing %q:\n%s", want, stdout.String())
 		}
