@@ -1,6 +1,14 @@
 package update
 
-import "testing"
+import (
+	"context"
+	"crypto/sha256"
+	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"strings"
+	"testing"
+)
 
 func TestCompareVersions(t *testing.T) {
 	tests := []struct {
@@ -45,5 +53,59 @@ func TestFindArchiveAssetMissing(t *testing.T) {
 	_, err := FindArchiveAsset([]Asset{{Name: "checksums.txt"}}, "1.2.3", "linux", "arm64")
 	if err == nil {
 		t.Fatal("FindArchiveAsset error = nil, want missing asset error")
+	}
+}
+
+func TestClientCheckFindsLatestRelease(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/repos/hczs/pxy/releases/latest" {
+			t.Fatalf("path = %s, want latest release path", r.URL.Path)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprint(w, `{"tag_name":"v1.2.3","assets":[{"name":"pxy_1.2.3_darwin_arm64.tar.gz","browser_download_url":"https://example.test/archive"},{"name":"checksums.txt","browser_download_url":"https://example.test/checksums"}]}`)
+	}))
+	t.Cleanup(server.Close)
+
+	client := Client{
+		Owner:          "hczs",
+		Repo:           "pxy",
+		CurrentVersion: "1.2.2",
+		GOOS:           "darwin",
+		GOARCH:         "arm64",
+		HTTPClient:     server.Client(),
+		APIBaseURL:     server.URL,
+	}
+
+	got, err := client.Check(context.Background())
+	if err != nil {
+		t.Fatalf("Check returned error: %v", err)
+	}
+	if got.UpToDate {
+		t.Fatal("UpToDate = true, want false")
+	}
+	if got.LatestVersion != "1.2.3" {
+		t.Fatalf("LatestVersion = %q, want 1.2.3", got.LatestVersion)
+	}
+	if got.Asset.Name != "pxy_1.2.3_darwin_arm64.tar.gz" {
+		t.Fatalf("asset = %q, want release archive", got.Asset.Name)
+	}
+}
+
+func TestVerifyChecksum(t *testing.T) {
+	data := []byte("archive bytes")
+	sum := sha256.Sum256(data)
+	checksums := fmt.Sprintf("%x  pxy_1.2.3_darwin_arm64.tar.gz\n", sum)
+
+	if err := VerifyChecksum(data, []byte(checksums), "pxy_1.2.3_darwin_arm64.tar.gz"); err != nil {
+		t.Fatalf("VerifyChecksum returned error: %v", err)
+	}
+}
+
+func TestVerifyChecksumMismatch(t *testing.T) {
+	data := []byte("archive bytes")
+	checksums := strings.Repeat("0", 64) + "  pxy_1.2.3_darwin_arm64.tar.gz\n"
+
+	if err := VerifyChecksum(data, []byte(checksums), "pxy_1.2.3_darwin_arm64.tar.gz"); err == nil {
+		t.Fatal("VerifyChecksum error = nil, want mismatch")
 	}
 }
