@@ -147,6 +147,26 @@ Test the current outbound IP:
 pxy test
 ```
 
+Show version:
+
+```bash
+pxy version
+```
+
+Check for updates:
+
+```bash
+pxy update --check
+```
+
+Update to the latest GitHub Releases version:
+
+```bash
+pxy update
+```
+
+On Windows, the running `pxy.exe` cannot be replaced directly. The command downloads the new file and prints the manual replacement path.
+
 Disable proxy:
 
 ```bash
@@ -164,6 +184,8 @@ pxy off
 | `pxy test` | Test the current proxy through `https://ipwho.is/` |
 | `pxy list` | List detected local proxy software |
 | `pxy config` | Reconfigure proxy manually |
+| `pxy version` | Show build version |
+| `pxy update` | Check for or install the latest GitHub Releases version |
 
 ## Supported Environment Variables
 

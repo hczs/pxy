@@ -12,6 +12,11 @@ builds:
     binary: pxy
     env:
       - CGO_ENABLED=0
+    ldflags:
+      - -s -w
+      - -X github.com/hczs/pxy/cmd.version={{ .Version }}
+      - -X github.com/hczs/pxy/cmd.commit={{ .Commit }}
+      - -X github.com/hczs/pxy/cmd.date={{ .Date }}
     goos:
       - darwin
       - linux

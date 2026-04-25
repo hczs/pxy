@@ -147,6 +147,26 @@ pxy status
 pxy test
 ```
 
+查看版本：
+
+```bash
+pxy version
+```
+
+检查更新：
+
+```bash
+pxy update --check
+```
+
+更新到 GitHub Releases 最新版本：
+
+```bash
+pxy update
+```
+
+Windows 下运行中的 `pxy.exe` 不能直接覆盖；命令会下载新文件并提示手动替换路径。
+
 关闭代理：
 
 ```bash
@@ -164,6 +184,8 @@ pxy off
 | `pxy test` | 通过 `https://ipwho.is/` 测试当前代理 |
 | `pxy list` | 列出检测到的本地代理软件 |
 | `pxy config` | 手动重新配置代理 |
+| `pxy version` | 查看构建版本 |
+| `pxy update` | 检查或安装 GitHub Releases 最新版本 |
 
 ## 支持的环境变量
 

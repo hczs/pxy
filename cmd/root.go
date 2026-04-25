@@ -45,6 +45,10 @@ func Run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 		return runTest(ctx, stdout, stderr)
 	case "list":
 		return runList(stdout)
+	case "version":
+		return runVersion(stdout)
+	case "update":
+		return runUpdate(ctx, args[2:], stdout, stderr)
 	case "_on":
 		return runInternalOn(args[2:], stdout, stderr)
 	case "_off":
@@ -258,5 +262,7 @@ func printHelp(w io.Writer) {
   pxy status    Show current proxy environment
   pxy test      Test current proxy with https://ipwho.is/
   pxy list      List detected local proxy software
-  pxy config    Reconfigure proxy manually`)
+  pxy config    Reconfigure proxy manually
+  pxy version   Show build version
+  pxy update    Check for and install a GitHub release update`)
 }
