@@ -7,7 +7,7 @@
 [![License](https://img.shields.io/github/license/hczs/pxy)](./LICENSE)
 [![Go Reference](https://pkg.go.dev/badge/github.com/hczs/pxy.svg)](https://pkg.go.dev/github.com/hczs/pxy)
 
-`pxy` 是一个轻量的 Go CLI，用来在当前终端会话中快速开启、关闭代理环境变量。
+`pxy` 是一个轻量的 Go CLI，用来快速开启、关闭代理环境变量，支持当前终端会话和用户级永久环境变量两种模式。
 
 它会自动识别常见本地代理工具，保存本地配置，并安装 shell function，让 `pxy on` / `pxy off` 可以真正影响当前 shell。
 
@@ -15,6 +15,7 @@
 
 - 一条命令初始化：自动检测代理配置并写入 shell profile。
 - 当前会话生效：通过 shell function 修改当前终端环境变量。
+- 用户级永久生效：通过 `pxy global on` 写入当前用户的永久环境变量。
 - 可恢复现场：`pxy off` 会恢复 `pxy on` 之前已有的代理变量。
 - 支持自动检测：Clash、Clash Verge、Surge、v2rayA、v2rayN。
 - 支持多种 shell：bash、zsh、PowerShell。
@@ -141,6 +142,14 @@ pxy on
 pxy status
 ```
 
+写入用户级永久代理环境变量，新开的终端和应用会继承：
+
+```bash
+pxy global on
+pxy global status
+pxy global off
+```
+
 测试当前出口 IP：
 
 ```bash
@@ -183,13 +192,16 @@ pxy off
 | `pxy status` | 查看当前代理环境变量状态 |
 | `pxy test` | 通过 `https://ipwho.is/` 测试当前代理 |
 | `pxy list` | 列出检测到的本地代理软件 |
+| `pxy global on` | 写入当前用户级永久代理环境变量 |
+| `pxy global off` | 移除当前用户级永久代理环境变量 |
+| `pxy global status` | 查看当前用户级永久代理环境变量状态 |
 | `pxy config` | 手动重新配置代理 |
 | `pxy version` | 查看构建版本 |
 | `pxy update` | 检查或安装 GitHub Releases 最新版本 |
 
 ## 支持的环境变量
 
-`pxy on` 会根据配置设置以下变量：
+`pxy on` 和 `pxy global on` 会根据配置设置以下变量：
 
 - `http_proxy` / `HTTP_PROXY`
 - `https_proxy` / `HTTPS_PROXY`
@@ -202,6 +214,8 @@ HTTP 与 HTTPS 代理使用 `http://host:port`，SOCKS5 代理使用 `socks5://h
 普通 CLI 子进程无法直接修改父 shell 的环境变量，所以 `pxy init` 会向 shell profile 写入一个 `pxy` shell function。
 
 之后执行 `pxy on` / `pxy off` 时，shell function 会调用 `pxy` 生成环境变量脚本，并在当前 shell 中执行。
+
+`pxy global on` / `pxy global off` 修改当前用户级的永久环境变量。Windows 下写入当前用户环境变量；bash/zsh 下写入用户 shell profile 中由 `pxy` 管理的片段。永久变量通常只会被新开的终端或新启动的应用继承。
 
 ## 配置
 

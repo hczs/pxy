@@ -9,9 +9,13 @@ import (
 
 var proxyVars = []string{"http_proxy", "HTTP_PROXY", "https_proxy", "HTTPS_PROXY", "all_proxy", "ALL_PROXY"}
 
-func OnScript(shellName string, cfg config.Config) (string, error) {
+func VariableNames() []string {
+	return append([]string(nil), proxyVars...)
+}
+
+func Values(cfg config.Config) (map[string]string, error) {
 	if err := cfg.Validate(); err != nil {
-		return "", err
+		return nil, err
 	}
 	values := map[string]string{}
 	if cfg.Proxy.HTTP.Enabled {
@@ -28,6 +32,14 @@ func OnScript(shellName string, cfg config.Config) (string, error) {
 		url := fmt.Sprintf("socks5://%s:%d", cfg.Proxy.SOCKS5.Host, cfg.Proxy.SOCKS5.Port)
 		values["all_proxy"] = url
 		values["ALL_PROXY"] = url
+	}
+	return values, nil
+}
+
+func OnScript(shellName string, cfg config.Config) (string, error) {
+	values, err := Values(cfg)
+	if err != nil {
+		return "", err
 	}
 
 	switch shellName {

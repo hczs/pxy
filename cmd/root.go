@@ -12,6 +12,7 @@ import (
 
 	"github.com/hczs/pxy/internal/config"
 	"github.com/hczs/pxy/internal/detect"
+	"github.com/hczs/pxy/internal/globalenv"
 	"github.com/hczs/pxy/internal/interactive"
 	"github.com/hczs/pxy/internal/proxyenv"
 	"github.com/hczs/pxy/internal/proxytest"
@@ -45,6 +46,8 @@ func Run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 		return runTest(ctx, stdout, stderr)
 	case "list":
 		return runList(stdout)
+	case "global":
+		return runGlobal(args[2:], stdout, stderr)
 	case "version":
 		return runVersion(stdout)
 	case "update":
@@ -56,6 +59,72 @@ func Run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 	default:
 		fmt.Fprintf(stderr, "unknown command: %s\n", args[1])
 		printHelp(stderr)
+		return 2
+	}
+}
+
+func runGlobal(args []string, stdout, stderr io.Writer) int {
+	if len(args) == 0 || args[0] == "-h" || args[0] == "--help" || args[0] == "help" {
+		printGlobalHelp(stdout)
+		return 0
+	}
+	home, err := os.UserHomeDir()
+	if err != nil {
+		fmt.Fprintf(stderr, "get home dir: %v\n", err)
+		return 1
+	}
+	shellName := shell.Detect(envMap(os.Environ()), filepath.Base(os.Args[0]))
+	switch args[0] {
+	case "on":
+		cfg, err := config.Load(config.DefaultPath(home))
+		if err != nil {
+			fmt.Fprintf(stderr, "%v\n", err)
+			return 1
+		}
+		profile, err := globalenv.On(home, shellName, cfg)
+		if err != nil {
+			fmt.Fprintf(stderr, "%v\n", err)
+			return 1
+		}
+		if profile != "" {
+			reload, err := shell.ReloadCommand(shellName, profile)
+			if err != nil {
+				fmt.Fprintf(stderr, "%v\n", err)
+				return 1
+			}
+			fmt.Fprintf(stdout, "已写入用户级永久代理环境变量，新开的终端将生效；当前终端可执行 %s\n", reload)
+			return 0
+		}
+		fmt.Fprintln(stdout, "已写入 Windows 用户级永久代理环境变量，新开的终端和应用将生效")
+		return 0
+	case "off":
+		profile, err := globalenv.Off(home, shellName)
+		if err != nil {
+			fmt.Fprintf(stderr, "%v\n", err)
+			return 1
+		}
+		if profile != "" {
+			reload, err := shell.ReloadCommand(shellName, profile)
+			if err != nil {
+				fmt.Fprintf(stderr, "%v\n", err)
+				return 1
+			}
+			fmt.Fprintf(stdout, "已移除用户级永久代理环境变量配置，新开的终端将生效；当前终端可执行 %s\n", reload)
+			return 0
+		}
+		fmt.Fprintln(stdout, "已移除 Windows 用户级永久代理环境变量，新开的终端和应用将生效")
+		return 0
+	case "status":
+		result, err := globalenv.Check(home, shellName)
+		if err != nil {
+			fmt.Fprintf(stderr, "%v\n", err)
+			return 1
+		}
+		fmt.Fprint(stdout, renderGlobalStatus(result))
+		return 0
+	default:
+		fmt.Fprintf(stderr, "unknown global command: %s\n", args[0])
+		printGlobalHelp(stderr)
 		return 2
 	}
 }
@@ -267,7 +336,43 @@ func printHelp(w io.Writer) {
   pxy status    Show current proxy environment
   pxy test      Test current proxy with https://ipwho.is/
   pxy list      List detected local proxy software
+  pxy global    Manage user-level permanent proxy environment variables
   pxy config    Reconfigure proxy manually
   pxy version   Show build version
   pxy update    Check for and install a GitHub release update`)
+}
+
+func printGlobalHelp(w io.Writer) {
+	fmt.Fprintln(w, `Usage:
+  pxy global on       Enable user-level permanent proxy environment variables
+  pxy global off      Remove user-level permanent proxy environment variables
+  pxy global status   Show user-level permanent proxy environment status`)
+}
+
+func renderGlobalStatus(result globalenv.Status) string {
+	var b strings.Builder
+	if !result.Enabled() {
+		b.WriteString("用户级永久代理状态: 已关闭\n")
+		return b.String()
+	}
+	b.WriteString("用户级永久代理状态: 已开启\n")
+	if value := firstGlobal(result.Values, "http_proxy", "HTTP_PROXY"); value != "" {
+		fmt.Fprintf(&b, "HTTP:  %s\n", value)
+	}
+	if value := firstGlobal(result.Values, "https_proxy", "HTTPS_PROXY"); value != "" {
+		fmt.Fprintf(&b, "HTTPS: %s\n", value)
+	}
+	if value := firstGlobal(result.Values, "all_proxy", "ALL_PROXY"); value != "" {
+		fmt.Fprintf(&b, "SOCKS5: %s\n", value)
+	}
+	return b.String()
+}
+
+func firstGlobal(values map[string]string, names ...string) string {
+	for _, name := range names {
+		if value := values[name]; value != "" {
+			return value
+		}
+	}
+	return ""
 }

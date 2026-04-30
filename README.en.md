@@ -7,7 +7,7 @@
 [![License](https://img.shields.io/github/license/hczs/pxy)](./LICENSE)
 [![Go Reference](https://pkg.go.dev/badge/github.com/hczs/pxy.svg)](https://pkg.go.dev/github.com/hczs/pxy)
 
-`pxy` is a lightweight Go CLI for quickly enabling and disabling proxy environment variables in the current terminal session.
+`pxy` is a lightweight Go CLI for quickly enabling and disabling proxy environment variables in either the current terminal session or the current user's permanent environment.
 
 It detects common local proxy tools, saves a local config, and installs a shell function so `pxy on` / `pxy off` can affect the current shell.
 
@@ -15,6 +15,7 @@ It detects common local proxy tools, saves a local config, and installs a shell 
 
 - One-command setup: detect proxy config and install the shell integration.
 - Current-session effect: update proxy variables in the active terminal.
+- User-level persistence: write permanent proxy variables with `pxy global on`.
 - Restore previous values: `pxy off` restores proxy variables that existed before `pxy on`.
 - Auto-detection for Clash, Clash Verge, Surge, v2rayA, and v2rayN.
 - Shell support for bash, zsh, and PowerShell.
@@ -141,6 +142,14 @@ Check status:
 pxy status
 ```
 
+Write user-level permanent proxy environment variables so new terminals and apps inherit them:
+
+```bash
+pxy global on
+pxy global status
+pxy global off
+```
+
 Test the current outbound IP:
 
 ```bash
@@ -183,13 +192,16 @@ pxy off
 | `pxy status` | Show current proxy environment status |
 | `pxy test` | Test the current proxy through `https://ipwho.is/` |
 | `pxy list` | List detected local proxy software |
+| `pxy global on` | Write current user-level permanent proxy environment variables |
+| `pxy global off` | Remove current user-level permanent proxy environment variables |
+| `pxy global status` | Show current user-level permanent proxy environment status |
 | `pxy config` | Reconfigure proxy manually |
 | `pxy version` | Show build version |
 | `pxy update` | Check for or install the latest GitHub Releases version |
 
 ## Supported Environment Variables
 
-`pxy on` sets these variables according to the saved config:
+`pxy on` and `pxy global on` set these variables according to the saved config:
 
 - `http_proxy` / `HTTP_PROXY`
 - `https_proxy` / `HTTPS_PROXY`
@@ -202,6 +214,8 @@ HTTP and HTTPS proxies use `http://host:port`. SOCKS5 proxies use `socks5://host
 A normal CLI child process cannot directly modify its parent shell environment. `pxy init` therefore writes a `pxy` shell function into your shell profile.
 
 When you run `pxy on` / `pxy off`, that function asks the `pxy` binary to generate shell code and evaluates it in the current shell.
+
+`pxy global on` / `pxy global off` modify the current user's permanent environment. On Windows, this writes the current user's environment variables. For bash/zsh, this writes a managed block into the user's shell profile. Permanent variables are normally inherited only by newly opened terminals or newly launched apps.
 
 ## Configuration
 
