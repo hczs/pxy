@@ -51,7 +51,7 @@ If macOS says the file is from an unidentified developer, run:
 xattr -d com.apple.quarantine /usr/local/bin/pxy
 ```
 
-Then restart your terminal, or run the `source ...` command printed by `pxy init`. After that:
+Then restart your terminal, or run the reload command printed by `pxy init`. After that:
 
 ```bash
 pxy on
@@ -71,7 +71,7 @@ sudo mv pxy /usr/local/bin/pxy
 pxy init
 ```
 
-Restart your terminal, or run the `source ...` command printed by `pxy init`. After that:
+Restart your terminal, or run the reload command printed by `pxy init`. After that:
 
 ```bash
 pxy on
@@ -103,7 +103,7 @@ Check the installation:
 pxy init
 ```
 
-`pxy init` writes the PowerShell profile integration. Reopen PowerShell. After that:
+`pxy init` writes the PowerShell profile integration. Reopen PowerShell, or run the printed `. '...Microsoft.PowerShell_profile.ps1'` command. After that:
 
 ```powershell
 pxy on
@@ -127,7 +127,7 @@ Initialize `pxy`:
 pxy init
 ```
 
-Follow the prompts to use a detected proxy config, or enter one manually. Then restart your terminal, or run the `source ...` command printed by `pxy init`.
+Follow the prompts to use a detected proxy config, or enter one manually. Then restart your terminal, or run the reload command printed by `pxy init`.
 
 Enable proxy:
 

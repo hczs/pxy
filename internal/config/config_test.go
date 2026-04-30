@@ -3,6 +3,7 @@ package config
 import (
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -60,8 +61,10 @@ func TestSaveLoadRoundTrip(t *testing.T) {
 	if got.Proxy.HTTP.Port != 7890 || got.Proxy.SOCKS5.Host != "localhost" || !got.Proxy.AutoDetect {
 		t.Fatalf("Load() = %+v", got)
 	}
-	if info, err := os.Stat(path); err != nil || info.Mode().Perm() != 0o600 {
-		t.Fatalf("config mode = %v, err=%v; want 0600", info.Mode().Perm(), err)
+	if runtime.GOOS != "windows" {
+		if info, err := os.Stat(path); err != nil || info.Mode().Perm() != 0o600 {
+			t.Fatalf("config mode = %v, err=%v; want 0600", info.Mode().Perm(), err)
+		}
 	}
 }
 

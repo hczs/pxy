@@ -51,7 +51,7 @@ pxy init
 xattr -d com.apple.quarantine /usr/local/bin/pxy
 ```
 
-然后重启终端，或执行 `pxy init` 输出的 `source ...` 命令。之后即可使用：
+然后重启终端，或执行 `pxy init` 输出的重新加载命令。之后即可使用：
 
 ```bash
 pxy on
@@ -71,7 +71,7 @@ sudo mv pxy /usr/local/bin/pxy
 pxy init
 ```
 
-重启终端，或执行 `pxy init` 输出的 `source ...` 命令。之后即可使用：
+重启终端，或执行 `pxy init` 输出的重新加载命令。之后即可使用：
 
 ```bash
 pxy on
@@ -103,7 +103,7 @@ if (($UserPath -split ";") -notcontains $InstallDir) {
 pxy init
 ```
 
-`pxy init` 会写入 PowerShell profile。完成后重新打开 PowerShell。之后即可使用：
+`pxy init` 会写入 PowerShell profile。完成后重新打开 PowerShell，或执行输出中的 `. '...Microsoft.PowerShell_profile.ps1'` 命令。之后即可使用：
 
 ```powershell
 pxy on
@@ -127,7 +127,7 @@ Release 构建支持 macOS、Linux、Windows 的 amd64 / arm64。
 pxy init
 ```
 
-按提示选择自动检测到的代理配置，或手动输入代理地址。完成后重启终端，或执行命令输出中的 `source ...`。
+按提示选择自动检测到的代理配置，或手动输入代理地址。完成后重启终端，或执行命令输出中的重新加载命令。
 
 开启代理：
 

@@ -109,7 +109,12 @@ func runInit(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 		fmt.Fprintf(stderr, "%v\n", err)
 		return 1
 	}
-	fmt.Fprintf(stdout, "pxy init 完成，请重启终端或执行 source %s\n", profile)
+	reload, err := shell.ReloadCommand(shellName, profile)
+	if err != nil {
+		fmt.Fprintf(stderr, "%v\n", err)
+		return 1
+	}
+	fmt.Fprintf(stdout, "pxy init 完成，请重启终端或执行 %s\n", reload)
 	return 0
 }
 

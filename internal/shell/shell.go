@@ -76,14 +76,25 @@ function pxy {
   )
   $pxyBin = '%s'
   switch ($cmd) {
-    "on" { Invoke-Expression (& $pxyBin _on --shell powershell) }
-    "off" { Invoke-Expression (& $pxyBin _off --shell powershell) }
+    "on" { Invoke-Expression ((& $pxyBin _on --shell powershell) -join [Environment]::NewLine) }
+    "off" { Invoke-Expression ((& $pxyBin _off --shell powershell) -join [Environment]::NewLine) }
     default {
       if ($cmd) { & $pxyBin $cmd @rest } else { & $pxyBin @rest }
     }
   }
 }
 `, marker, strings.ReplaceAll(pxyBin, "'", "''")), nil
+	default:
+		return "", fmt.Errorf("unsupported shell: %s", shellName)
+	}
+}
+
+func ReloadCommand(shellName, profile string) (string, error) {
+	switch shellName {
+	case "bash", "zsh":
+		return fmt.Sprintf("source %s", posixShellQuote(profile)), nil
+	case "powershell":
+		return fmt.Sprintf(". %s", powerShellQuote(profile)), nil
 	default:
 		return "", fmt.Errorf("unsupported shell: %s", shellName)
 	}
@@ -128,4 +139,12 @@ func removeExistingSnippet(content string) string {
 func escapeDouble(value string) string {
 	value = strings.ReplaceAll(value, `\`, `\\`)
 	return strings.ReplaceAll(value, `"`, `\"`)
+}
+
+func posixShellQuote(value string) string {
+	return "'" + strings.ReplaceAll(value, "'", "'\\''") + "'"
+}
+
+func powerShellQuote(value string) string {
+	return "'" + strings.ReplaceAll(value, "'", "''") + "'"
 }
